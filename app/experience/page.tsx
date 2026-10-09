@@ -1,289 +1,141 @@
-import Link from "next/link";
-import { ArrowLeft, ArrowRight, Maximize2 } from "lucide-react";
+import type { Metadata } from "next";
+import { Hand, Maximize2, MousePointerClick, Navigation } from "lucide-react";
 import DigitalTwin from "@/components/DigitalTwin";
+import {
+  CTABanner,
+  Container,
+  PageHero,
+  SectionHeading,
+} from "@/components/ui";
+
+export const metadata: Metadata = {
+  title: "Interactive 3D Demo",
+  description:
+    "Explore a real-time 2BHK digital twin in your browser. Orbit the 3D model, jump between rooms and see how buyers experience a PropTwin property.",
+};
+
+const features = [
+  {
+    icon: Navigation,
+    title: "Room navigation",
+    text: "Jump between the living room, bedrooms, kitchen and balcony with a single click.",
+  },
+  {
+    icon: MousePointerClick,
+    title: "Interactive hotspots",
+    text: "Select glowing markers inside the model to fly the camera into each space.",
+  },
+  {
+    icon: Hand,
+    title: "Free orbit & zoom",
+    text: "Drag to orbit and scroll to zoom. Inspect the layout from any angle.",
+  },
+  {
+    icon: Maximize2,
+    title: "Full-screen presentation",
+    text: "Go full-screen for sales meetings, exhibitions and client walkthroughs.",
+  },
+];
 
 export default function ExperiencePage() {
   return (
-    <main className="min-h-screen bg-[#f5f3ef] text-black">
+    <main className="bg-paper">
+      <PageHero
+        eyebrow="Interactive 3D demo"
+        title={
+          <>
+            Step inside the{" "}
+            <span className="text-white/40">digital twin.</span>
+          </>
+        }
+        description="A real-time 2BHK model running directly in your browser, built the same way we build every client project."
+      />
 
-      {/* HERO */}
-      <section className="bg-black px-6 pb-20 pt-32 text-white">
-        <div className="mx-auto w-[90%] max-w-7xl">
-
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-white/50 transition hover:text-white"
-          >
-            <ArrowLeft size={16} />
-            Back to PropTwin
-          </Link>
-
-          <p className="mt-12 text-xs font-bold uppercase tracking-[0.3em] text-white/40">
-            INTERACTIVE PROPERTY EXPERIENCE
-          </p>
-
-          <h1 className="mt-5 max-w-5xl text-5xl font-bold tracking-tight md:text-7xl">
-            Step inside the
-            <br />
-            digital property twin.
-          </h1>
-
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-white/55">
-            Explore a PropTwin 2BHK prototype directly in your browser.
-            Select rooms, navigate between spaces, rotate the model and
-            discover how a property can become an interactive digital
-            experience.
-          </p>
-
-        </div>
-      </section>
-
-      {/* EXPERIENCE */}
-      <section className="px-6 py-20">
-        <div className="mx-auto w-[90%] max-w-7xl">
-
-          {/* LABEL */}
-          <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
-
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.25em] text-black/40">
-                PROPTWIN DEMO
-              </p>
-
-              <h2 className="mt-3 text-3xl font-bold md:text-4xl">
-                2BHK Digital Property Twin
-              </h2>
-
-              <p className="mt-3 max-w-2xl text-black/55">
-                This prototype demonstrates how an interactive property
-                model can be presented to prospective customers.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-xs font-medium text-white">
-              <Maximize2 size={14} />
-              Interactive 3D
-            </div>
-
-          </div>
-
-          {/* DIGITAL TWIN */}
+      <section className="-mt-12 pb-24 md:-mt-16 md:pb-32">
+        <Container className="relative">
           <DigitalTwin />
 
-        </div>
-      </section>
-
-      {/* EXPERIENCE FEATURES */}
-      <section className="bg-white px-6 py-24">
-        <div className="mx-auto w-[90%] max-w-7xl">
-
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-black/40">
-            EXPERIENCE FEATURES
+          <p className="mt-4 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-black/40">
+            Prototype model · Runs in any modern browser · No install required
           </p>
-
-          <h2 className="mt-5 max-w-3xl text-4xl font-bold md:text-5xl">
-            Explore the property your way.
-          </h2>
-
-          <div className="mt-14 grid gap-6 md:grid-cols-3">
-
-            <div className="rounded-3xl bg-[#f5f3ef] p-8">
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black text-white">
-                01
-              </div>
-
-              <h3 className="mt-7 text-xl font-bold">
-                Explore Rooms
-              </h3>
-
-              <p className="mt-4 leading-7 text-black/55">
-                Move between the living room, bedrooms, kitchen and
-                balcony using the interactive room navigation.
-              </p>
-
-            </div>
-
-            <div className="rounded-3xl bg-[#f5f3ef] p-8">
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black text-white">
-                02
-              </div>
-
-              <h3 className="mt-7 text-xl font-bold">
-                Interactive Hotspots
-              </h3>
-
-              <p className="mt-4 leading-7 text-black/55">
-                Select highlighted spaces inside the model to move the
-                camera and explore different areas of the property.
-              </p>
-
-            </div>
-
-            <div className="rounded-3xl bg-[#f5f3ef] p-8">
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-black text-white">
-                03
-              </div>
-
-              <h3 className="mt-7 text-xl font-bold">
-                Customer Presentation
-              </h3>
-
-              <p className="mt-4 leading-7 text-black/55">
-                Demonstrate a property digitally before a customer
-                visits the physical project location.
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
+        </Container>
       </section>
 
-      {/* BUSINESS VALUE */}
-      <section className="bg-black px-6 py-24 text-white">
-        <div className="mx-auto grid w-[90%] max-w-7xl gap-16 md:grid-cols-2">
+      <section className="pb-24 md:pb-32">
+        <Container>
+          <SectionHeading
+            index="01"
+            eyebrow="Demo features"
+            title="Explore the property your way."
+          />
 
-          <div>
+          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => {
+              const Icon = feature.icon;
 
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-white/40">
-              FOR REAL-ESTATE BUSINESSES
-            </p>
+              return (
+                <article
+                  key={feature.title}
+                  className="rounded-3xl border border-black/5 bg-white p-7"
+                >
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-brass">
+                    <Icon size={20} strokeWidth={1.6} />
+                  </span>
 
-            <h2 className="mt-5 text-4xl font-bold md:text-5xl">
-              From property presentation to digital experience.
-            </h2>
+                  <h3 className="mt-8 text-lg font-semibold tracking-tight">
+                    {feature.title}
+                  </h3>
 
+                  <p className="mt-2 text-sm leading-6 text-black/55">
+                    {feature.text}
+                  </p>
+                </article>
+              );
+            })}
           </div>
-
-          <div className="text-lg leading-8 text-white/55">
-
-            <p>
-              A digital property twin can become an additional
-              technology layer for property marketing and customer
-              engagement.
-            </p>
-
-            <p className="mt-6">
-              Instead of relying only on static images or videos,
-              customers can interact with a digital representation of
-              the property.
-            </p>
-
-            <p className="mt-6 font-medium text-white">
-              One Property → One Digital Twin → Multiple Experiences
-            </p>
-
-          </div>
-
-        </div>
+        </Container>
       </section>
 
-      {/* FUTURE CHANNELS */}
-      <section className="px-6 py-24">
-        <div className="mx-auto w-[90%] max-w-7xl">
+      <section className="bg-ink py-24 text-white md:py-32">
+        <Container className="grid gap-12 lg:grid-cols-2 lg:gap-20">
+          <SectionHeading
+            tone="dark"
+            index="02"
+            eyebrow="What your project gets"
+            title={
+              <>
+                This demo is a prototype.{" "}
+                <span className="text-white/40">Yours goes further.</span>
+              </>
+            }
+          />
 
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-black/40">
-            FUTURE EXPERIENCES
-          </p>
-
-          <h2 className="mt-5 max-w-3xl text-4xl font-bold md:text-5xl">
-            The same digital twin can evolve across platforms.
-          </h2>
-
-          <div className="mt-14 grid gap-5 md:grid-cols-3">
-
-            <div className="rounded-3xl border border-black/10 p-8">
-
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-black/35">
-                WEB
-              </p>
-
-              <h3 className="mt-4 text-2xl font-bold">
-                Browser Experience
-              </h3>
-
-              <p className="mt-4 leading-7 text-black/55">
-                Customers explore the property directly through a
-                website.
-              </p>
-
-            </div>
-
-            <div className="rounded-3xl border border-black/10 p-8">
-
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-black/35">
-                MOBILE
-              </p>
-
-              <h3 className="mt-4 text-2xl font-bold">
-                Property in Your Pocket
-              </h3>
-
-              <p className="mt-4 leading-7 text-black/55">
-                The digital property experience can be extended to
-                Android and iOS.
-              </p>
-
-            </div>
-
-            <div className="rounded-3xl border border-black/10 p-8">
-
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-black/35">
-                VR
-              </p>
-
-              <h3 className="mt-4 text-2xl font-bold">
-                Step Inside
-              </h3>
-
-              <p className="mt-4 leading-7 text-black/55">
-                The digital twin can later be extended into immersive
-                VR experiences.
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
+          <ul className="space-y-px self-end overflow-hidden rounded-2xl border border-white/10 bg-white/10">
+            {[
+              "Your exact floor plans, modeled to scale",
+              "Real materials, finishes and furniture",
+              "Your branding, unit data and pricing hotspots",
+              "Deployment to your website, app and VR headsets",
+              "Matching photoreal renders and 360° panoramas",
+            ].map((item, index) => (
+              <li
+                key={item}
+                className="flex items-center gap-5 bg-ink px-6 py-5"
+              >
+                <span className="font-mono text-xs text-brass">
+                  0{index + 1}
+                </span>
+                <span className="text-white/80">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </Container>
       </section>
 
-      {/* CTA */}
-      <section className="bg-[#e7e2d9] px-6 py-20">
-        <div className="mx-auto flex w-[90%] max-w-7xl flex-col justify-between gap-8 md:flex-row md:items-center">
-
-          <div>
-
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-black/40">
-              BUILD YOUR DIGITAL PROPERTY
-            </p>
-
-            <h2 className="mt-4 text-3xl font-bold md:text-4xl">
-              Ready to create your property twin?
-            </h2>
-
-            <p className="mt-3 text-black/55">
-              Share your project with PropTwin and explore the
-              possibilities.
-            </p>
-
-          </div>
-
-          <Link
-            href="/#contact"
-            className="inline-flex items-center justify-center rounded-full bg-black px-7 py-4 text-sm font-semibold text-white transition hover:bg-black/80"
-          >
-            Request a Demo
-            <ArrowRight size={18} className="ml-2" />
-          </Link>
-
-        </div>
-      </section>
-
+      <CTABanner
+        title="Want this for your project?"
+        description="Share your floor plans and we'll show you what your property looks like as an interactive digital twin."
+      />
     </main>
   );
 }

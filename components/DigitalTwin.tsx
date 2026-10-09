@@ -1,15 +1,22 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { Grid, OrbitControls, Text, useCursor } from "@react-three/drei";
 import {
   Maximize,
   Minimize,
   RotateCcw,
   MousePointer2,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import * as THREE from "three";
+import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 type RoomName =
   | "Overview"
@@ -431,6 +438,17 @@ function Hotspot({
   label: string;
   onClick: () => void;
 }) {
+  const [hovered, setHovered] = useState(false);
+  const ring = useRef<THREE.Mesh>(null);
+
+  useCursor(hovered);
+
+  useFrame(({ clock }) => {
+    if (!ring.current) return;
+    const pulse = 1 + (Math.sin(clock.elapsedTime * 2.5) + 1) * 0.25;
+    ring.current.scale.setScalar(pulse);
+  });
+
   return (
     <group position={position}>
 
@@ -439,20 +457,36 @@ function Hotspot({
           event.stopPropagation();
           onClick();
         }}
+        onPointerOver={(event) => {
+          event.stopPropagation();
+          setHovered(true);
+        }}
+        onPointerOut={() => setHovered(false)}
+        scale={hovered ? 1.25 : 1}
       >
-        <sphereGeometry args={[0.35, 24, 24]} />
+        <sphereGeometry args={[0.3, 24, 24]} />
 
         <meshStandardMaterial
-          color="#ffffff"
-          emissive="#ffffff"
-          emissiveIntensity={1}
+          color={hovered ? "#e2c592" : "#ffffff"}
+          emissive={hovered ? "#c8a26b" : "#ffffff"}
+          emissiveIntensity={0.9}
+        />
+      </mesh>
+
+      <mesh ref={ring}>
+        <sphereGeometry args={[0.34, 24, 24]} />
+        <meshBasicMaterial
+          color="#c8a26b"
+          transparent
+          opacity={0.25}
+          depthWrite={false}
         />
       </mesh>
 
       <Text
         position={[0, 0.65, 0]}
         fontSize={0.32}
-        color="white"
+        color={hovered ? "#e2c592" : "white"}
         anchorX="center"
         anchorY="middle"
         outlineWidth={0.02}
@@ -474,8 +508,20 @@ function Apartment({
 }: {
   onRoomSelect: (room: RoomName) => void;
 }) {
+  const model = useRef<THREE.Group>(null);
+
+  // Every architectural mesh casts and receives shadows.
+  useLayoutEffect(() => {
+    model.current?.traverse((object) => {
+      if ((object as THREE.Mesh).isMesh) {
+        object.castShadow = true;
+        object.receiveShadow = true;
+      }
+    });
+  }, []);
+
   return (
-    <group>
+    <group ref={model}>
 
       {/* FLOORS */}
 
@@ -542,11 +588,6 @@ function Apartment({
 
       <Door
         position={[0.15, 0, 3]}
-        rotation={[0, Math.PI / 2, 0]}
-      />
-
-      <Door
-        position={[-0.15, 0, 3]}
         rotation={[0, Math.PI / 2, 0]}
       />
 
@@ -629,51 +670,65 @@ function Apartment({
 }
 
 /* ---------------------------------------------------------
-   CAMERA CONTROLLER
+   CAMERA RIG
+   Glides to the selected room, then hands control back to
+   the visitor as soon as they start orbiting.
 --------------------------------------------------------- */
 
-function CameraController({
+function CameraRig({
   room,
+  version,
 }: {
   room: RoomName;
+  version: number;
 }) {
-  const { camera } = useThree();
+  const camera = useThree((state) => state.camera);
+  const controls = useThree(
+    (state) => state.controls
+  ) as OrbitControlsImpl | null;
 
-  const targetPosition = new THREE.Vector3(
-    roomInfo[room].camera[0],
-    roomInfo[room].camera[1],
-    roomInfo[room].camera[2]
+  const animating = useRef(true);
+
+  const goal = useMemo(
+    () => ({
+      position: new THREE.Vector3(...roomInfo[room].camera),
+      target: new THREE.Vector3(...roomInfo[room].target),
+    }),
+    [room]
   );
 
-  const targetLookAt = new THREE.Vector3(
-    roomInfo[room].target[0],
-    roomInfo[room].target[1],
-    roomInfo[room].target[2]
-  );
+  // Re-run the fly-to whenever a room is (re)selected.
+  useEffect(() => {
+    animating.current = true;
+  }, [room, version]);
 
-  useFrame(() => {
-    camera.position.lerp(
-      targetPosition,
-      0.035
-    );
+  useEffect(() => {
+    if (!controls) return;
 
-    const direction = new THREE.Vector3();
+    const stop = () => {
+      animating.current = false;
+    };
 
-    camera.getWorldDirection(direction);
+    controls.addEventListener("start", stop);
+    return () => controls.removeEventListener("start", stop);
+  }, [controls]);
 
-    const desiredDirection = targetLookAt
-      .clone()
-      .sub(camera.position)
-      .normalize();
+  useFrame((_, delta) => {
+    if (!animating.current || !controls) return;
 
-    direction.lerp(
-      desiredDirection,
-      0.035
-    );
+    // Frame-rate independent easing.
+    const t = 1 - Math.pow(0.02, delta);
 
-    camera.lookAt(
-      camera.position.clone().add(direction)
-    );
+    camera.position.lerp(goal.position, t);
+    controls.target.lerp(goal.target, t);
+    controls.update();
+
+    if (
+      camera.position.distanceTo(goal.position) < 0.02 &&
+      controls.target.distanceTo(goal.target) < 0.02
+    ) {
+      animating.current = false;
+    }
   });
 
   return null;
@@ -700,6 +755,10 @@ export default function DigitalTwin() {
   const [selectedRoom, setSelectedRoom] =
     useState<RoomName>("Overview");
 
+  // Bumped on every selection so re-clicking a room re-centres it.
+  const [selectionVersion, setSelectionVersion] =
+    useState(0);
+
   const [fullscreen, setFullscreen] =
     useState(false);
 
@@ -708,88 +767,108 @@ export default function DigitalTwin() {
   const selectedInfo =
     roomInfo[selectedRoom];
 
-  const enterFullscreen = async () => {
-    if (!viewerRef.current) return;
+  const selectRoom = (room: RoomName) => {
+    setSelectedRoom(room);
+    setSelectionVersion((value) => value + 1);
+  };
 
+  // Keep state in sync when the user leaves fullscreen with Esc.
+  useEffect(() => {
+    const onChange = () =>
+      setFullscreen(Boolean(document.fullscreenElement));
+
+    document.addEventListener("fullscreenchange", onChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", onChange);
+  }, []);
+
+  const toggleFullscreen = async () => {
     try {
-      await viewerRef.current.requestFullscreen();
-      setFullscreen(true);
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await viewerRef.current?.requestFullscreen();
+      }
     } catch {
-      setFullscreen(false);
+      // Fullscreen is unavailable (e.g. iOS Safari); ignore.
     }
-  };
-
-  const exitFullscreen = async () => {
-    try {
-      await document.exitFullscreen();
-      setFullscreen(false);
-    } catch {
-      setFullscreen(false);
-    }
-  };
-
-  const toggleFullscreen = () => {
-    if (document.fullscreenElement) {
-      exitFullscreen();
-    } else {
-      enterFullscreen();
-    }
-  };
-
-  const resetExperience = () => {
-    setSelectedRoom("Overview");
   };
 
   return (
     <div
       ref={viewerRef}
-      className={`relative w-full overflow-hidden bg-[#171717] ${
+      className={`relative w-full overflow-hidden bg-[#141416] ${
         fullscreen
           ? "h-screen rounded-none"
-          : "h-[650px] rounded-2xl"
+          : "h-[560px] rounded-3xl md:h-[680px]"
       }`}
     >
 
       {/* 3D CANVAS */}
 
       <Canvas
+        shadows
+        dpr={[1, 2]}
         camera={{
-          position: [14, 12, 16],
+          position: roomInfo.Overview.camera,
           fov: 45,
         }}
+        aria-label="Interactive 3D model of a 2BHK apartment"
       >
 
         <color
           attach="background"
-          args={["#171717"]}
+          args={["#141416"]}
         />
 
-        <ambientLight intensity={2} />
+        <fog
+          attach="fog"
+          args={["#141416", 30, 55]}
+        />
+
+        <ambientLight intensity={1.2} />
+
+        <hemisphereLight
+          args={["#fff6e8", "#2a2a2e", 0.8]}
+        />
 
         <directionalLight
-          position={[10, 15, 10]}
-          intensity={3}
+          position={[10, 15, 8]}
+          intensity={2.6}
+          castShadow
+          shadow-mapSize={[2048, 2048]}
+          shadow-camera-left={-12}
+          shadow-camera-right={12}
+          shadow-camera-top={12}
+          shadow-camera-bottom={-12}
+          shadow-bias={-0.0005}
         />
 
         <pointLight
           position={[-5, 8, -5]}
-          intensity={1.5}
+          intensity={1.2}
         />
 
         <Apartment
-          onRoomSelect={setSelectedRoom}
+          onRoomSelect={selectRoom}
         />
 
-        <CameraController
-          room={selectedRoom}
-        />
-
-        <gridHelper
-          args={[30, 30]}
-          position={[0, -0.12, 0]}
+        <Grid
+          position={[0, -0.11, 0]}
+          args={[60, 60]}
+          cellSize={1}
+          cellThickness={0.6}
+          cellColor="#2e2e32"
+          sectionSize={5}
+          sectionThickness={1}
+          sectionColor="#5a4a32"
+          fadeDistance={45}
+          fadeStrength={1.5}
+          infiniteGrid
         />
 
         <OrbitControls
+          makeDefault
           enableDamping
           dampingFactor={0.08}
           minDistance={8}
@@ -797,110 +876,115 @@ export default function DigitalTwin() {
           maxPolarAngle={Math.PI / 2.05}
         />
 
+        <CameraRig
+          room={selectedRoom}
+          version={selectionVersion}
+        />
+
       </Canvas>
 
-      {/* TOP LEFT BRAND */}
+      {/* TOP BAR */}
 
-      <div className="absolute left-5 top-5 rounded-full bg-black/70 px-4 py-2 text-xs font-semibold tracking-widest text-white backdrop-blur">
-        PROPTWIN • 2BHK DIGITAL TWIN
-      </div>
+      <div className="pointer-events-none absolute inset-x-4 top-4 flex items-start justify-between gap-3 md:inset-x-5 md:top-5">
 
-      {/* TOP RIGHT CONTROLS */}
-
-      <div className="absolute right-5 top-5 flex gap-2">
-
-        <button
-          onClick={resetExperience}
-          className="flex items-center gap-2 rounded-xl bg-black/70 px-4 py-3 text-xs font-medium text-white backdrop-blur transition hover:bg-white hover:text-black"
-          title="Reset view"
-        >
-          <RotateCcw size={15} />
-          <span className="hidden sm:inline">
-            Overview
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-white/80 backdrop-blur-md">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
-        </button>
+          Live · 2BHK Digital Twin
+        </div>
 
-        <button
-          onClick={toggleFullscreen}
-          className="flex items-center gap-2 rounded-xl bg-black/70 px-4 py-3 text-xs font-medium text-white backdrop-blur transition hover:bg-white hover:text-black"
-          title="Fullscreen"
+        <div className="pointer-events-auto flex gap-2">
+
+          <button
+            type="button"
+            onClick={() => selectRoom("Overview")}
+            className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3.5 py-2.5 text-xs font-medium text-white backdrop-blur-md transition hover:bg-white hover:text-black"
+            aria-label="Reset to overview"
+          >
+            <RotateCcw size={14} />
+            <span className="hidden sm:inline">
+              Reset
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3.5 py-2.5 text-xs font-medium text-white backdrop-blur-md transition hover:bg-white hover:text-black"
+            aria-label={fullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+          >
+            {fullscreen ? (
+              <Minimize size={14} />
+            ) : (
+              <Maximize size={14} />
+            )}
+
+            <span className="hidden sm:inline">
+              {fullscreen ? "Exit" : "Fullscreen"}
+            </span>
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* BOTTOM: ROOM INFO + NAVIGATION */}
+
+      <div className="pointer-events-none absolute inset-x-4 bottom-4 flex flex-col gap-3 md:inset-x-5 md:bottom-5">
+
+        <div className="flex items-end justify-between gap-4">
+
+          <div className="max-w-sm rounded-2xl border border-white/10 bg-black/65 p-5 text-white shadow-2xl backdrop-blur-md">
+
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brass">
+              Selected space
+            </p>
+
+            <h3 className="mt-2 text-xl font-semibold tracking-tight md:text-2xl">
+              {selectedInfo.title}
+            </h3>
+
+            <p className="mt-2 hidden text-sm leading-6 text-white/60 sm:block">
+              {selectedInfo.description}
+            </p>
+
+          </div>
+
+          <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-black/60 px-4 py-2.5 text-xs text-white/60 backdrop-blur-md lg:flex">
+            <MousePointer2 size={14} />
+            Drag to orbit · Scroll to zoom · Click a hotspot
+          </div>
+
+        </div>
+
+        <div
+          role="tablist"
+          aria-label="Rooms"
+          className="no-scrollbar pointer-events-auto flex gap-1 self-start overflow-x-auto rounded-full border border-white/10 bg-black/65 p-1 backdrop-blur-md max-w-full"
         >
-          {fullscreen ? (
-            <Minimize size={15} />
-          ) : (
-            <Maximize size={15} />
-          )}
+          {navigationItems.map((room) => {
+            const active = selectedRoom === room;
 
-          <span className="hidden sm:inline">
-            {fullscreen ? "Exit" : "Fullscreen"}
-          </span>
-        </button>
-
-      </div>
-
-      {/* STATUS */}
-
-      <div className="absolute left-1/2 top-[80px] flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/60 px-4 py-2 text-xs text-white/70 backdrop-blur">
-
-        <span className="h-2 w-2 rounded-full bg-green-400" />
-
-        Interactive Experience
-
-      </div>
-
-      {/* ROOM NAVIGATION */}
-
-      <div className="absolute left-1/2 top-[120px] flex max-w-[90%] -translate-x-1/2 gap-2 overflow-x-auto rounded-2xl bg-black/75 p-2 backdrop-blur-md">
-
-        {navigationItems.map((room) => {
-
-          const active =
-            selectedRoom === room;
-
-          return (
-            <button
-              key={room}
-              onClick={() =>
-                setSelectedRoom(room)
-              }
-              className={`whitespace-nowrap rounded-xl px-4 py-2 text-xs font-medium transition ${
-                active
-                  ? "bg-white text-black"
-                  : "text-white/70 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              {room}
-            </button>
-          );
-        })}
-
-      </div>
-
-      {/* ROOM INFORMATION */}
-
-      <div className="absolute bottom-5 left-5 max-w-sm rounded-2xl bg-black/75 p-5 text-white shadow-2xl backdrop-blur-md">
-
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-          Selected Space
-        </p>
-
-        <h3 className="mt-2 text-2xl font-bold">
-          {selectedInfo.title}
-        </h3>
-
-        <p className="mt-2 text-sm leading-6 text-white/65">
-          {selectedInfo.description}
-        </p>
-
-      </div>
-
-      {/* INTERACTION HELP */}
-
-      <div className="absolute bottom-5 right-5 hidden items-center gap-2 rounded-xl bg-black/60 px-4 py-3 text-xs text-white/60 backdrop-blur md:flex">
-
-        <MousePointer2 size={14} />
-
-        Drag to rotate • Scroll to zoom
+            return (
+              <button
+                key={room}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => selectRoom(room)}
+                className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-medium transition ${
+                  active
+                    ? "bg-white text-black"
+                    : "text-white/65 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {room}
+              </button>
+            );
+          })}
+        </div>
 
       </div>
 

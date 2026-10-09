@@ -1,101 +1,94 @@
-import { Monitor, Smartphone, Glasses } from "lucide-react";
+import { Glasses, Monitor, Smartphone } from "lucide-react";
+import { Container, SectionHeading } from "@/components/ui";
+import { outputFormats } from "@/components/site";
 
 const channels = [
   {
     icon: Monitor,
-    number: "01",
-    title: "WEB",
+    title: "Web",
     subtitle: "Explore in the browser",
     description:
-      "Customers can explore apartments, villas and properties directly from a website without installing additional software.",
+      "An embeddable 3D viewer for your website and listings. Buyers open a link and explore, with nothing to install.",
   },
   {
     icon: Smartphone,
-    number: "02",
-    title: "MOBILE",
+    title: "Mobile",
     subtitle: "Property in your pocket",
     description:
-      "Extend the same digital property experience to Android and iOS devices for customers, sales teams and site visits.",
+      "Touch-friendly models for Android and iOS, with AR so buyers can view a unit at tabletop scale.",
   },
   {
     icon: Glasses,
-    number: "03",
     title: "VR",
     subtitle: "Step inside the property",
     description:
-      "Create immersive VR experiences where customers can virtually walk through the property using compatible headsets.",
+      "Headset-ready walkthroughs for sales galleries and exhibitions, so buyers feel the true scale of every room.",
   },
 ];
 
 export default function Channels() {
   return (
-    <section
-      id="channels"
-      className="bg-[#e8e4dc] py-28 md:py-36"
-    >
+    <section id="channels" className="bg-ink py-24 text-white md:py-36">
+      <Container>
+        <SectionHeading
+          tone="dark"
+          index="05"
+          eyebrow="One Twin · Three Channels"
+          title={
+            <>
+              Your property,{" "}
+              <span className="text-white/40">wherever your buyer is.</span>
+            </>
+          }
+        />
 
-      <div className="mx-auto w-[90%] max-w-7xl">
-
-        <div className="max-w-3xl">
-
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-black/40">
-            ONE TWIN. THREE EXPERIENCES.
-          </p>
-
-          <h2 className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-
-            Your property,
-            <br />
-
-            <span className="font-normal">
-              wherever your customer is.
-            </span>
-
-          </h2>
-
-        </div>
-
-        <div className="mt-20 grid gap-px bg-black/10 md:grid-cols-3">
-
-          {channels.map((channel) => {
+        <div className="mt-16 grid gap-4 md:grid-cols-3">
+          {channels.map((channel, index) => {
             const Icon = channel.icon;
 
             return (
-              <div
+              <article
                 key={channel.title}
-                className="bg-[#e8e4dc] p-8 md:p-10"
+                className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-transparent p-8 md:p-10"
               >
-
                 <div className="flex items-center justify-between">
-
-                  <Icon size={30} />
-
-                  <span className="text-xs text-black/40">
-                    {channel.number}
+                  <Icon size={28} strokeWidth={1.5} className="text-brass" />
+                  <span className="font-mono text-xs text-white/35">
+                    0{index + 1}
                   </span>
-
                 </div>
 
-                <h3 className="mt-20 text-3xl font-bold">
+                <h3 className="mt-16 text-3xl font-semibold tracking-tight">
                   {channel.title}
                 </h3>
 
-                <p className="mt-2 font-medium">
-                  {channel.subtitle}
-                </p>
+                <p className="mt-1 text-white/70">{channel.subtitle}</p>
 
-                <p className="mt-5 text-sm leading-relaxed text-black/55">
+                <p className="mt-5 text-sm leading-6 text-white/45">
                   {channel.description}
                 </p>
-
-              </div>
+              </article>
             );
           })}
-
         </div>
 
-      </div>
+        <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-white/10 px-6 py-5 md:flex-row md:items-center md:gap-10">
+          <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">
+            Delivered as
+          </p>
 
+          <ul className="flex flex-wrap gap-2">
+            {outputFormats.map((format) => (
+              <li
+                key={format}
+                className="rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 font-mono text-xs text-white/70"
+              >
+                {format}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Container>
     </section>
   );
 }

@@ -1,79 +1,82 @@
-import Link from "next/link";
-import { ArrowRight, Play } from "lucide-react";
+import { Container, ButtonLink } from "@/components/ui";
+import HeroModel from "@/components/HeroModel";
+import { inputFormats } from "@/components/site";
+
+const highlights = [
+  { value: "1:1", label: "Scale-accurate geometry" },
+  { value: "3", label: "Channels: web, mobile, VR" },
+  { value: "0", label: "Installs for your buyers" },
+];
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+    <section className="relative overflow-hidden bg-ink text-white">
+      <div className="bg-blueprint absolute inset-0 [mask-image:radial-gradient(ellipse_at_70%_40%,black_10%,transparent_65%)]" />
+      <div className="absolute right-[-10%] top-[10%] h-[640px] w-[640px] rounded-full bg-brass/10 blur-[120px]" />
 
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/20" />
-
-        <div className="absolute right-0 top-0 h-full w-full bg-[radial-gradient(circle_at_75%_45%,rgba(255,255,255,0.15),transparent_40%)]" />
-      </div>
-
-      <div className="relative mx-auto flex min-h-screen w-[90%] max-w-7xl items-center">
-
-        <div className="max-w-4xl pt-20">
-
-          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-white/60">
-            DIGITAL TWINS FOR REAL ESTATE
+      <Container className="relative grid min-h-[100svh] items-center gap-10 pb-16 pt-32 lg:grid-cols-[1fr_1.05fr] lg:gap-6 lg:pt-24">
+        <div className="max-w-2xl">
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-brass" />
+            3D Modeling Studio for Real Estate
           </p>
 
-          <h1 className="font-sans text-5xl font-bold leading-[0.95] tracking-[-0.04em] sm:text-6xl md:text-8xl">
-
-            Turn Properties
+          <h1 className="mt-7 text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.045em] sm:text-6xl xl:text-[5.25rem]">
+            From floor plan
             <br />
-
-            Into{" "}
-            <span className="font-normal">
-              Experiences.
+            to{" "}
+            <span className="bg-gradient-to-r from-brass-light to-brass bg-clip-text text-transparent">
+              digital twin.
             </span>
-
           </h1>
 
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-white/65 md:text-xl">
-
-            PropTwin transforms apartments, villas and real-estate
-            projects into immersive digital properties that customers
-            can explore before they visit.
-
+          <p className="mt-7 max-w-xl text-pretty text-lg leading-8 text-white/60">
+            We turn your drawings, CAD and BIM files into precise 3D models,
+            photoreal renders and interactive walkthroughs your buyers can
+            explore on the web, on mobile and in VR.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-4">
-
-            <Link
-              href="#contact"
-              className="flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-black transition hover:bg-white/85"
-            >
-              Build Your Property Twin
-              <ArrowRight size={17} />
-            </Link>
-
-            <Link
-              href="#experience"
-              className="flex items-center gap-2 rounded-full border border-white/30 px-6 py-3.5 text-sm font-semibold transition hover:bg-white hover:text-black"
-            >
-              <Play size={16} />
-              Explore Demo
-            </Link>
-
+          <div className="mt-10 flex flex-wrap gap-3">
+            <ButtonLink href="/contact">Start Your 3D Model</ButtonLink>
+            <ButtonLink href="/experience" variant="secondary">
+              Explore Live Demo
+            </ButtonLink>
           </div>
 
-          <div className="mt-16 flex flex-wrap gap-8 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
-
-            <span>WEB</span>
-            <span>MOBILE</span>
-            <span>VR</span>
-            <span>3D</span>
-            <span>DIGITAL TWIN</span>
-
-          </div>
-
+          <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-8">
+            {highlights.map((item) => (
+              <div key={item.label}>
+                <dt className="sr-only">{item.label}</dt>
+                <dd className="text-3xl font-semibold tracking-tight">
+                  {item.value}
+                </dd>
+                <dd className="mt-1 text-xs leading-5 text-white/45">
+                  {item.label}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
-      </div>
+        <div className="relative h-[420px] sm:h-[520px] lg:h-[640px]">
+          <HeroModel />
+        </div>
+      </Container>
 
+      {/* Supported formats strip */}
+      <div className="relative border-t border-white/10 bg-black/30">
+        <Container className="flex flex-col gap-4 py-6 md:flex-row md:items-center md:gap-10">
+          <p className="shrink-0 font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">
+            We model from
+          </p>
+
+          <ul className="flex flex-wrap gap-x-8 gap-y-2 font-mono text-sm text-white/70">
+            {inputFormats.map((format) => (
+              <li key={format}>{format}</li>
+            ))}
+          </ul>
+        </Container>
+      </div>
     </section>
   );
 }

@@ -1,104 +1,115 @@
+import Link from "next/link";
 import {
+  ArrowUpRight,
   Box,
-  Building2,
+  Camera,
   Glasses,
-  Smartphone,
   Monitor,
-  MousePointer2,
+  Sofa,
+  Smartphone,
 } from "lucide-react";
+import { Container, SectionHeading } from "@/components/ui";
 
-const solutions = [
+export const services = [
   {
     icon: Box,
-    title: "Digital Property Twins",
-    text: "Transform architectural information into interactive digital properties.",
+    title: "Architectural 3D Modeling",
+    text: "Precise exterior and building models built from your CAD, BIM or PDF drawings, true to scale and dimension.",
+    tag: "LOD 300–400",
+  },
+  {
+    icon: Sofa,
+    title: "Interior Modeling & Staging",
+    text: "Fully furnished interiors with real materials, fixtures and finishes that match your specification sheet.",
+    tag: "PBR materials",
+  },
+  {
+    icon: Camera,
+    title: "Photoreal Rendering",
+    text: "Marketing-grade still renders, 360° panoramas and animated flythroughs, all from the same model.",
+    tag: "4K · 360°",
   },
   {
     icon: Monitor,
-    title: "Interactive Web",
-    text: "Let customers explore properties directly through a web browser.",
+    title: "Interactive Web 3D",
+    text: "Real-time, browser-based walkthroughs with room navigation and hotspots. Embed them on any website.",
+    tag: "WebGL",
   },
   {
     icon: Smartphone,
-    title: "Mobile Experience",
-    text: "Bring the property experience to Android and iOS devices.",
+    title: "Mobile & AR",
+    text: "Optimized models for Android and iOS, including AR so buyers can place a unit on their table.",
+    tag: "GLB · USDZ",
   },
   {
     icon: Glasses,
-    title: "VR Experience",
-    text: "Allow customers to step inside the property using compatible VR headsets.",
-  },
-  {
-    icon: MousePointer2,
-    title: "Virtual Walkthroughs",
-    text: "Navigate rooms, spaces and property layouts interactively.",
-  },
-  {
-    icon: Building2,
-    title: "Developer Sales Tool",
-    text: "Give sales teams an immersive way to present properties to customers.",
+    title: "VR Walkthroughs",
+    text: "Immersive walkthroughs for headsets, ready for sales galleries, exhibitions and remote buyers.",
+    tag: "WebXR",
   },
 ];
 
 export default function Solutions() {
   return (
-    <section id="solutions" className="bg-[#111] py-28 text-white md:py-36">
+    <section id="services" className="bg-ink py-24 text-white md:py-36">
+      <Container>
+        <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+          <SectionHeading
+            tone="dark"
+            index="02"
+            eyebrow="3D Modeling Services"
+            title={
+              <>
+                One model.{" "}
+                <span className="text-white/40">Every deliverable.</span>
+              </>
+            }
+            description="We build a single, accurate 3D model of your property, then turn it into everything your sales and marketing teams need."
+          />
 
-      <div className="mx-auto w-[90%] max-w-7xl">
-
-        <div className="max-w-3xl">
-
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-white/40">
-            OUR SOLUTIONS
-          </p>
-
-          <h2 className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-
-            One digital property.
-            <br />
-
-            <span className="font-normal">
-              Multiple experiences.
-            </span>
-
-          </h2>
-
-          <p className="mt-7 max-w-2xl text-lg text-white/50">
-            PropTwin creates immersive property experiences that can be
-            delivered across web, mobile and VR.
-          </p>
-
+          <Link
+            href="/solutions"
+            className="group inline-flex shrink-0 items-center gap-2 text-sm text-white/70 transition hover:text-white"
+          >
+            All services
+            <ArrowUpRight
+              size={16}
+              className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            />
+          </Link>
         </div>
 
-        <div className="mt-20 grid border border-white/10 md:grid-cols-3">
-
-          {solutions.map((solution) => {
-            const Icon = solution.icon;
+        <div className="mt-16 grid gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 md:grid-cols-2 lg:grid-cols-3">
+          {services.map((service) => {
+            const Icon = service.icon;
 
             return (
-              <div
-                key={solution.title}
-                className="border-b border-white/10 p-8 md:border-r"
+              <article
+                key={service.title}
+                className="group relative bg-ink p-8 transition-colors hover:bg-ink-2 md:p-10"
               >
+                <div className="flex items-start justify-between">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-brass transition group-hover:border-brass/40">
+                    <Icon size={22} strokeWidth={1.6} />
+                  </span>
 
-                <Icon size={27} className="mb-12 text-white/60" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
+                    {service.tag}
+                  </span>
+                </div>
 
-                <h3 className="text-xl font-semibold">
-                  {solution.title}
+                <h3 className="mt-10 text-xl font-semibold tracking-tight">
+                  {service.title}
                 </h3>
 
-                <p className="mt-4 text-sm leading-relaxed text-white/45">
-                  {solution.text}
+                <p className="mt-3 text-sm leading-6 text-white/50">
+                  {service.text}
                 </p>
-
-              </div>
+              </article>
             );
           })}
-
         </div>
-
-      </div>
-
+      </Container>
     </section>
   );
 }

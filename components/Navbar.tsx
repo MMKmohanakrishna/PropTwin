@@ -1,172 +1,139 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { ArrowRight, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { navLinks } from "@/components/site";
+
+export function Logo() {
+  return (
+    <span className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
+      <svg
+        viewBox="0 0 32 32"
+        className="h-7 w-7"
+        fill="none"
+        aria-hidden="true"
+      >
+        {/* Isometric cube: the "twin" mark */}
+        <path d="M16 3 28 10v12l-12 7-12-7V10L16 3Z" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M4 10l12 7 12-7M16 17v12" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M16 3v14" stroke="#c8a26b" strokeWidth="1.6" strokeDasharray="2 2" />
+      </svg>
+      <span>
+        Prop<span className="font-light text-white/70">Twin</span>
+      </span>
+    </span>
+  );
+}
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const closeMenu = () => {
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Close the mobile menu whenever the route changes.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
     setOpen(false);
-  };
+  }
+
+  const solid = scrolled || open;
 
   return (
-    <header className="absolute left-0 top-0 z-50 w-full text-white">
-      <div className="mx-auto flex w-[90%] max-w-7xl items-center justify-between py-6">
-
-        {/* LOGO */}
-        <Link
-          href="/"
-          onClick={closeMenu}
-          className="text-2xl font-bold tracking-tight"
-        >
-          Prop<span className="font-normal">Twin</span>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 text-white transition-colors duration-300 ${
+        solid
+          ? "border-b border-white/10 bg-ink/85 backdrop-blur-xl"
+          : "border-b border-transparent bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-5 sm:px-8">
+        <Link href="/" aria-label="PropTwin home">
+          <Logo />
         </Link>
 
-        {/* DESKTOP NAVIGATION */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav
+          aria-label="Main"
+          className="hidden items-center gap-1 md:flex"
+        >
+          {navLinks.map((link) => {
+            const active = pathname === link.href;
 
-          <Link
-            href="/"
-            className="text-sm text-white/80 transition hover:text-white"
-          >
-            Home
-          </Link>
-
-          <Link
-            href="/about"
-            className="text-sm text-white/80 transition hover:text-white"
-          >
-            About
-          </Link>
-
-          <Link
-            href="/solutions"
-            className="text-sm text-white/80 transition hover:text-white"
-          >
-            Solutions
-          </Link>
-
-          <Link
-            href="/developers"
-            className="text-sm text-white/80 transition hover:text-white"
-          >
-            Developers
-          </Link>
-
-          <Link
-            href="/experience"
-            className="text-sm text-white/80 transition hover:text-white"
-          >
-            Experience
-          </Link>
-
-          <Link
-            href="/#channels"
-            className="text-sm text-white/80 transition hover:text-white"
-          >
-            Web / Mobile / VR
-          </Link>
-
-          <Link
-            href="/#process"
-            className="text-sm text-white/80 transition hover:text-white"
-          >
-            How It Works
-          </Link>
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`rounded-full px-4 py-2 text-sm transition ${
+                  active
+                    ? "bg-white/10 text-white"
+                    : "text-white/65 hover:text-white"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
           <Link
             href="/contact"
-            className="rounded-full border border-white/40 px-5 py-2.5 text-sm font-medium transition hover:bg-white hover:text-black"
+            className="group ml-3 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-brass-light"
           >
-            Request a Demo
+            Request a Quote
+            <ArrowRight
+              size={15}
+              className="transition-transform group-hover:translate-x-0.5"
+            />
           </Link>
-
         </nav>
 
-        {/* MOBILE BUTTON */}
         <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden"
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          className="-mr-2 rounded-full p-2 md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
         >
-          {open ? (
-            <X size={25} />
-          ) : (
-            <Menu size={25} />
-          )}
+          {open ? <X size={24} /> : <Menu size={24} />}
         </button>
-
       </div>
 
-      {/* MOBILE NAVIGATION */}
       {open && (
-        <div className="mx-4 rounded-2xl bg-black p-6 shadow-2xl md:hidden">
-
-          <div className="flex flex-col gap-5">
-
-            <Link
-              href="/"
-              onClick={closeMenu}
-              className="text-white/80 transition hover:text-white"
-            >
-              Home
-            </Link>
-
-            <Link
-              href="/about"
-              onClick={closeMenu}
-              className="text-white/80 transition hover:text-white"
-            >
-              About
-            </Link>
-
-            <Link
-              href="/solutions"
-              onClick={closeMenu}
-              className="text-white/80 transition hover:text-white"
-            >
-              Solutions
-            </Link>
-
-            <Link
-              href="/experience"
-              onClick={closeMenu}
-              className="text-white/80 transition hover:text-white"
-            >
-              Experience
-            </Link>
-
-            <Link
-              href="/#channels"
-              onClick={closeMenu}
-              className="text-white/80 transition hover:text-white"
-            >
-              Web / Mobile / VR
-            </Link>
-
-            <Link
-              href="/#process"
-              onClick={closeMenu}
-              className="text-white/80 transition hover:text-white"
-            >
-              How It Works
-            </Link>
+        <nav
+          aria-label="Mobile"
+          className="border-t border-white/10 px-5 pb-6 pt-2 md:hidden"
+        >
+          <div className="flex flex-col">
+            {[{ href: "/", label: "Home" }, ...navLinks].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`border-b border-white/10 py-4 text-base ${
+                  pathname === link.href ? "text-white" : "text-white/65"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
 
             <Link
               href="/contact"
-              onClick={closeMenu}
-              className="rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-black"
+              className="mt-6 rounded-full bg-white px-5 py-3.5 text-center text-sm font-medium text-ink"
             >
-              Request a Demo
+              Request a Quote
             </Link>
-
           </div>
-
-        </div>
+        </nav>
       )}
-
     </header>
   );
 }

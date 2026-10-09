@@ -1,462 +1,131 @@
-"use client";
+import type { Metadata } from "next";
+import { Clock, FileBox, Mail, MapPin, Phone } from "lucide-react";
+import { Container, PageHero } from "@/components/ui";
+import ContactForm from "@/components/ContactForm";
+import { contact, inputFormats } from "@/components/site";
 
-import { useState } from "react";
-import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Building2,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
+export const metadata: Metadata = {
+  title: "Request a Quote",
+  description:
+    "Tell PropTwin about your apartment, villa or real-estate project and get a scope and quote for 3D modeling, renders and interactive digital twins.",
+};
 
 export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSubmitted(true);
-  };
-
   return (
-    <main className="min-h-screen bg-[#f5f3ef] text-[#171717]">
+    <main className="bg-paper">
+      <PageHero
+        eyebrow="Request a quote"
+        title={
+          <>
+            Let&apos;s model your{" "}
+            <span className="text-white/40">next project.</span>
+          </>
+        }
+        description="Tell us about your property and the files you have. We'll come back with a scope, timeline and quote."
+      />
 
-      {/* HERO */}
-      <section className="bg-black text-white">
-        <div className="mx-auto w-[90%] max-w-7xl py-28 md:py-36">
-
-          <Link
-            href="/"
-            className="mb-10 inline-flex items-center gap-2 text-sm text-white/50 transition hover:text-white"
-          >
-            <ArrowLeft size={16} />
-            Back to PropTwin
-          </Link>
-
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/35">
-            REQUEST A DEMO
-          </p>
-
-          <h1 className="mt-5 max-w-4xl text-5xl font-bold tracking-tight md:text-7xl">
-            Let's build your
-            <span className="block text-white/45">
-              digital property twin.
-            </span>
-          </h1>
-
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-white/55">
-            Tell us about your property or real-estate project.
-            Our team can discuss the right digital experience for
-            your requirements.
-          </p>
-
-        </div>
-      </section>
-
-      {/* CONTACT + FORM */}
       <section className="py-20 md:py-28">
-        <div className="mx-auto grid w-[90%] max-w-7xl gap-14 lg:grid-cols-[0.8fr_1.2fr]">
+        <Container className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <aside className="space-y-10">
+            <div>
+              <h2 className="text-3xl font-semibold tracking-tight">
+                Talk to the studio.
+              </h2>
 
-          {/* CONTACT INFORMATION */}
-          <div>
-
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-black/35">
-              TALK TO PROPTWIN
-            </p>
-
-            <h2 className="mt-5 text-4xl font-bold tracking-tight">
-              Start a conversation.
-            </h2>
-
-            <p className="mt-6 max-w-md leading-7 text-black/55">
-              Whether you are developing apartments, villas,
-              commercial properties or a large residential project,
-              we can discuss how a digital twin can fit into your
-              customer experience and sales process.
-            </p>
-
-            <div className="mt-10 space-y-5">
-
-              <ContactItem
-                icon={<Building2 size={20} />}
-                title="PropTwin"
-                text="Digital Twins for Real Estate"
-              />
-
-              <ContactItem
-                icon={<Phone size={20} />}
-                title="Phone"
-                text="+91 9160244950"
-                href="tel:+919160244950"
-              />
-
-              <ContactItem
-                icon={<Mail size={20} />}
-                title="Email"
-                text="info@proptwin.in"
-                href="mailto:info@proptwin.in"
-              />
-
-              <ContactItem
-                icon={<MapPin size={20} />}
-                title="Office"
-                text="3rd floor, 2161, Social working Office Space, 4th ‘B’ Block, 100 Feet Road, Banashankari 6th Stage, Ganigara Palya, Bengaluru – 560062, Karnataka, India"
-              />
-
+              <p className="mt-4 max-w-md leading-7 text-black/55">
+                Whether it&apos;s a single show flat or an entire township,
+                we&apos;ll help you choose the right level of detail and the
+                right channels: web, mobile or VR.
+              </p>
             </div>
 
-          </div>
+            <ul className="space-y-6">
+              <ContactItem icon={<Phone size={18} />} title="Phone" href={contact.phoneHref}>
+                {contact.phone}
+              </ContactItem>
 
-          {/* FORM */}
-          <div className="rounded-3xl border border-black/10 bg-white p-7 shadow-sm md:p-10">
+              <ContactItem icon={<Mail size={18} />} title="Email" href={`mailto:${contact.email}`}>
+                {contact.email}
+              </ContactItem>
 
-            {submitted ? (
-              <SuccessMessage
-                onReset={() => setSubmitted(false)}
-              />
-            ) : (
-              <>
-                <div className="mb-8">
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-black/30">
-                    PROJECT ENQUIRY
-                  </p>
+              <ContactItem icon={<MapPin size={18} />} title="Office">
+                {contact.addressLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </ContactItem>
 
-                  <h2 className="mt-3 text-2xl font-bold">
-                    Tell us about your project
-                  </h2>
+              <ContactItem icon={<Clock size={18} />} title="Response time">
+                Within one business day
+              </ContactItem>
+            </ul>
 
-                  <p className="mt-2 text-sm leading-6 text-black/45">
-                    Fill in the details below and our team can
-                    understand your requirements.
-                  </p>
-                </div>
+            <div className="rounded-2xl border border-black/10 p-6">
+              <p className="flex items-center gap-2 text-sm font-medium">
+                <FileBox size={18} className="text-brass" />
+                Files we work from
+              </p>
 
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-6"
-                >
-
-                  {/* NAME */}
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      Your Name
-                    </label>
-
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      required
-                      placeholder="Enter your name"
-                      className="w-full rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                    />
-                  </div>
-
-                  {/* COMPANY */}
-                  <div>
-                    <label
-                      htmlFor="company"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      Company / Organization
-                    </label>
-
-                    <input
-                      id="company"
-                      name="company"
-                      type="text"
-                      required
-                      placeholder="Your company name"
-                      className="w-full rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                    />
-                  </div>
-
-                  {/* EMAIL + PHONE */}
-                  <div className="grid gap-6 md:grid-cols-2">
-
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="mb-2 block text-sm font-medium"
-                      >
-                        Email
-                      </label>
-
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        placeholder="you@company.com"
-                        className="w-full rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                      />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="phone"
-                        className="mb-2 block text-sm font-medium"
-                      >
-                        Phone
-                      </label>
-
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        placeholder="+91"
-                        className="w-full rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                      />
-                    </div>
-
-                  </div>
-
-                  {/* PROJECT TYPE */}
-                  <div>
-                    <label
-                      htmlFor="projectType"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      Project Type
-                    </label>
-
-                    <select
-                      id="projectType"
-                      name="projectType"
-                      required
-                      className="w-full rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                    >
-                      <option value="">
-                        Select project type
-                      </option>
-
-                      <option value="apartments">
-                        Apartments
-                      </option>
-
-                      <option value="villas">
-                        Villas
-                      </option>
-
-                      <option value="commercial">
-                        Commercial Property
-                      </option>
-
-                      <option value="township">
-                        Township / Large Development
-                      </option>
-
-                      <option value="other">
-                        Other
-                      </option>
-                    </select>
-                  </div>
-
-                  {/* PROJECT STAGE */}
-                  <div>
-                    <label
-                      htmlFor="projectStage"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      Project Stage
-                    </label>
-
-                    <select
-                      id="projectStage"
-                      name="projectStage"
-                      required
-                      className="w-full rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                    >
-                      <option value="">
-                        Select project stage
-                      </option>
-
-                      <option value="planning">
-                        Planning
-                      </option>
-
-                      <option value="construction">
-                        Under Construction
-                      </option>
-
-                      <option value="completed">
-                        Completed
-                      </option>
-
-                      <option value="marketing">
-                        Currently Marketing
-                      </option>
-                    </select>
-                  </div>
-
-                  {/* UNITS */}
-                  <div>
-                    <label
-                      htmlFor="units"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      Approximate Number of Units
-                    </label>
-
-                    <input
-                      id="units"
-                      name="units"
-                      type="number"
-                      min="1"
-                      placeholder="Example: 120"
-                      className="w-full rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                    />
-                  </div>
-
-                  {/* MESSAGE */}
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="mb-2 block text-sm font-medium"
-                    >
-                      Tell us about your requirement
-                    </label>
-
-                    <textarea
-                      id="message"
-                      name="message"
-                      rows={5}
-                      placeholder="Tell us about your property, 3D model, floor plans or the experience you want to create..."
-                      className="w-full resize-none rounded-xl border border-black/10 bg-[#f8f7f4] px-4 py-3.5 text-sm outline-none transition focus:border-black"
-                    />
-                  </div>
-
-                  {/* SUBMIT */}
-                  <button
-                    type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-4 text-sm font-semibold text-white transition hover:bg-black/80"
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {inputFormats.map((format) => (
+                  <li
+                    key={format}
+                    className="rounded-full bg-sand px-3 py-1 font-mono text-xs text-black/65"
                   >
-                    Submit Project Enquiry
-                    <ArrowRight size={17} />
-                  </button>
+                    {format}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </aside>
 
-                </form>
-              </>
-            )}
-
+          <div className="rounded-[2rem] border border-black/5 bg-white p-7 shadow-[0_1px_0_rgba(0,0,0,0.04),0_30px_80px_-40px_rgba(0,0,0,0.3)] md:p-10">
+            <ContactForm />
           </div>
-
-        </div>
+        </Container>
       </section>
-
-      {/* BOTTOM CTA */}
-      <section className="bg-black py-20 text-white">
-        <div className="mx-auto w-[90%] max-w-5xl text-center">
-
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/35">
-            PROPTWIN
-          </p>
-
-          <h2 className="mt-5 text-3xl font-bold md:text-5xl">
-            One Property.
-            <span className="block text-white/45">
-              One Digital Twin.
-            </span>
-          </h2>
-
-          <p className="mt-6 text-white/45">
-            Web • Mobile • VR
-          </p>
-
-        </div>
-      </section>
-
     </main>
   );
 }
 
-
-/* -------------------------------------------------------
-   CONTACT ITEM
-------------------------------------------------------- */
-
 function ContactItem({
   icon,
   title,
-  text,
   href,
+  children,
 }: {
   icon: React.ReactNode;
   title: string;
-  text: string;
   href?: string;
+  children: React.ReactNode;
 }) {
-  const content = (
-    <div className="flex gap-4">
-
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-black text-white">
+  const body = (
+    <span className="flex gap-4">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ink text-brass">
         {icon}
-      </div>
+      </span>
 
-      <div>
-        <p className="text-xs font-bold uppercase tracking-[0.15em] text-black/30">
+      <span>
+        <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-black/40">
           {title}
-        </p>
-
-        <p className="mt-1 text-sm leading-6 text-black/70">
-          {text}
-        </p>
-      </div>
-
-    </div>
+        </span>
+        <span className="mt-1 block text-sm leading-6 text-black/75">
+          {children}
+        </span>
+      </span>
+    </span>
   );
 
-  if (href) {
-    return (
-      <a
-        href={href}
-        className="block transition hover:opacity-70"
-      >
-        {content}
-      </a>
-    );
-  }
-
-  return content;
-}
-
-
-/* -------------------------------------------------------
-   SUCCESS
-------------------------------------------------------- */
-
-function SuccessMessage({
-  onReset,
-}: {
-  onReset: () => void;
-}) {
   return (
-    <div className="flex min-h-[600px] flex-col items-center justify-center text-center">
-
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-black text-white">
-        ✓
-      </div>
-
-      <h2 className="mt-7 text-3xl font-bold">
-        Enquiry received.
-      </h2>
-
-      <p className="mt-4 max-w-md leading-7 text-black/50">
-        Thank you for contacting PropTwin. Your project details
-        have been captured in this prototype form.
-      </p>
-
-      <button
-        onClick={onReset}
-        className="mt-8 rounded-full border border-black/20 px-6 py-3 text-sm font-medium transition hover:bg-black hover:text-white"
-      >
-        Submit Another Enquiry
-      </button>
-
-    </div>
+    <li>
+      {href ? (
+        <a href={href} className="block transition hover:opacity-70">
+          {body}
+        </a>
+      ) : (
+        body
+      )}
+    </li>
   );
 }

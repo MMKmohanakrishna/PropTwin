@@ -1,122 +1,108 @@
+import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { Logo } from "@/components/Navbar";
+import { contact } from "@/components/site";
+
+const columns = [
+  {
+    title: "Services",
+    links: [
+      { href: "/solutions", label: "Architectural 3D Modeling" },
+      { href: "/solutions", label: "Interior Modeling" },
+      { href: "/solutions", label: "Photoreal Rendering" },
+      { href: "/experience", label: "Interactive Web 3D" },
+      { href: "/solutions", label: "VR Walkthroughs" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { href: "/about", label: "About" },
+      { href: "/developers", label: "For Developers" },
+      { href: "/#process", label: "Our Process" },
+      { href: "/#channels", label: "Web · Mobile · VR" },
+      { href: "/contact", label: "Contact" },
+    ],
+  },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-black px-6 py-14 text-white">
+    <footer className="bg-ink text-white">
+      <div className="mx-auto w-full max-w-7xl px-5 pt-20 sm:px-8">
+        <div className="grid gap-14 lg:grid-cols-[1.4fr_1fr_1fr_1.4fr]">
+          <div>
+            <Logo />
 
-      <div className="mx-auto grid w-[90%] max-w-7xl gap-12 md:grid-cols-3">
-
-        {/* BRAND */}
-        <div>
-          <h2 className="text-2xl font-bold">
-            Prop<span className="font-normal">Twin</span>
-          </h2>
-
-          <p className="mt-3 text-sm text-white/50">
-            Digital Twins for Real Estate.
-          </p>
-
-          <p className="mt-6 max-w-sm text-sm leading-6 text-white/40">
-            Transforming apartments, villas and real-estate
-            projects into interactive digital property experiences
-            across web, mobile and VR.
-          </p>
-        </div>
-
-        {/* SOLUTIONS */}
-        <div>
-          <p className="text-sm font-semibold">
-            Solutions
-          </p>
-
-          <div className="mt-5 flex flex-col gap-3 text-sm text-white/50">
-            <a href="#solutions" className="hover:text-white">
-              Digital Property Twins
-            </a>
-
-            <a href="#experience" className="hover:text-white">
-              Interactive Web
-            </a>
-
-            <a href="#channels" className="hover:text-white">
-              Mobile Experience
-            </a>
-
-            <a href="#channels" className="hover:text-white">
-              VR Experience
-            </a>
-
-            <a href="#process" className="hover:text-white">
-              Virtual Walkthroughs
-            </a>
+            <p className="mt-6 max-w-xs text-sm leading-6 text-white/50">
+              3D modeling studio for real estate. We turn plans and CAD
+              files into accurate 3D models, renders and interactive
+              digital twins.
+            </p>
           </div>
-        </div>
 
-        {/* CONTACT */}
-        <div>
-          <p className="text-sm font-semibold">
-            Contact
-          </p>
-
-          <div className="mt-5 space-y-5 text-sm text-white/50">
-
-            <div className="flex gap-3">
-              <MapPin
-                size={18}
-                className="mt-1 shrink-0 text-white"
-              />
-
-              <p className="leading-6">
-                3rd Floor, 2161,
-                <br />
-                Social Working Office Space,
-                <br />
-                4th ‘B’ Block, 100 Feet Road,
-                <br />
-                Banashankari 6th Stage,
-                <br />
-                Ganigara Palya,
-                <br />
-                Bengaluru – 560062,
-                <br />
-                Karnataka, India.
+          {columns.map((column) => (
+            <div key={column.title}>
+              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">
+                {column.title}
               </p>
+
+              <ul className="mt-6 space-y-3 text-sm">
+                {column.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-white/65 transition hover:text-white"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
+          ))}
 
-            <a
-              href="tel:+919160244950"
-              className="flex items-center gap-3 hover:text-white"
-            >
-              <Phone size={18} />
-              +91 9160244950
-            </a>
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/40">
+              Studio
+            </p>
 
-            <a
-              href="mailto:info@proptwin.in"
-              className="flex items-center gap-3 hover:text-white"
-            >
-              <Mail size={18} />
-              info@proptwin.in
-            </a>
+            <div className="mt-6 space-y-4 text-sm text-white/65">
+              <p className="flex gap-3 leading-6">
+                <MapPin size={17} className="mt-1 shrink-0 text-brass" />
+                <span>
+                  {contact.addressLines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </span>
+              </p>
 
+              <a
+                href={contact.phoneHref}
+                className="flex items-center gap-3 transition hover:text-white"
+              >
+                <Phone size={17} className="text-brass" />
+                {contact.phone}
+              </a>
+
+              <a
+                href={`mailto:${contact.email}`}
+                className="flex items-center gap-3 transition hover:text-white"
+              >
+                <Mail size={17} className="text-brass" />
+                {contact.email}
+              </a>
+            </div>
           </div>
         </div>
 
+        <div className="mt-20 flex flex-col justify-between gap-4 border-t border-white/10 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-white/35 md:flex-row">
+          <p>© {new Date().getFullYear()} PropTwin. All rights reserved.</p>
+          <p>3D Modeling · Digital Twins · Web · Mobile · VR</p>
+        </div>
       </div>
-
-      {/* BOTTOM */}
-      <div className="mx-auto mt-12 flex w-[90%] max-w-7xl flex-col justify-between gap-4 border-t border-white/10 pt-6 text-xs text-white/30 md:flex-row">
-
-        <p>
-          © {new Date().getFullYear()} PropTwin. All rights reserved.
-        </p>
-
-        <p>
-          Digital Twins • Web • Mobile • VR
-        </p>
-
-      </div>
-
     </footer>
   );
 }

@@ -8,6 +8,7 @@ import {
   SectionHeading,
 } from "@/components/ui";
 import { services } from "@/components/Solutions";
+import VillaModel from "@/components/VillaModel";
 import { inputFormats, outputFormats } from "@/components/site";
 
 export const metadata: Metadata = {
@@ -94,11 +95,12 @@ export default function SolutionsPage() {
           </>
         }
         description="One accurate 3D model of your property becomes renders, web walkthroughs, mobile AR and VR, all from a single source of truth."
+        aside={<VillaModel />}
       >
         <div className="mt-10 flex flex-wrap gap-3">
           <ButtonLink href="/contact">Request a Quote</ButtonLink>
           <ButtonLink href="/experience" variant="secondary">
-            View 3D Demo
+            See Live Project
           </ButtonLink>
         </div>
       </PageHero>

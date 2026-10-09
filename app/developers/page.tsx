@@ -118,7 +118,7 @@ export default function DevelopersPage() {
 
             <article className="flex flex-col justify-between rounded-3xl bg-ink p-8 text-white">
               <p className="text-xl font-semibold leading-snug tracking-tight">
-                See what a digital twin looks like for a real 2BHK.
+                Walk through a real apartment we built in Blender and Unity.
               </p>
 
               <div className="mt-8">

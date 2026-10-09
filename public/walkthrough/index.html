@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Apartment 3D · PropTwin Walkthrough</title>
+    <meta name="robots" content="noindex" />
+    <style>
+      :root {
+        --ink: #0b0b0c;
+        --paper: #f4f2ee;
+        --brass: #c8a26b;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        overscroll-behavior: none;
+        background: var(--ink);
+        color: var(--paper);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      #unity-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: var(--ink);
+        outline: none;
+        /* Finger drags control the walkthrough, not page scroll/zoom. */
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      #loader {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 56px 56px,
+          linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0 / 56px 56px,
+          var(--ink);
+        transition: opacity .5s ease;
+      }
+      #loader.hidden { opacity: 0; pointer-events: none; }
+      .card { width: min(420px, 100%); text-align: center; }
+      .mark { width: 44px; height: 44px; margin: 0 auto 22px; animation: spin 6s linear infinite; }
+      @keyframes spin { to { transform: rotateY(360deg); } }
+      .eyebrow {
+        font: 500 11px/1 ui-monospace, "SFMono-Regular", Menlo, monospace;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: var(--brass);
+      }
+      h1 { margin: 12px 0 6px; font-size: 26px; font-weight: 600; letter-spacing: -.02em; }
+      .sub { margin: 0; font-size: 14px; color: rgba(244,242,238,.55); }
+      .bar { margin: 28px 0 10px; height: 3px; border-radius: 3px; background: rgba(255,255,255,.1); overflow: hidden; }
+      .fill { height: 100%; width: 0; background: var(--brass); transition: width .2s ease; }
+      .status {
+        font: 12px/1.4 ui-monospace, "SFMono-Regular", Menlo, monospace;
+        color: rgba(244,242,238,.45);
+      }
+      .error { color: #f2b8a8; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+
+    <div id="loader" role="status" aria-live="polite">
+      <div class="card">
+        <svg class="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 3 28 10v12l-12 7-12-7V10L16 3Z" stroke="#f4f2ee" stroke-width="1.6" />
+          <path d="M4 10l12 7 12-7M16 17v12" stroke="#f4f2ee" stroke-width="1.6" />
+          <path d="M16 3v14" stroke="#c8a26b" stroke-width="1.6" stroke-dasharray="2 2" />
+        </svg>
+        <p class="eyebrow">PropTwin · Live project</p>
+        <h1>Apartment 3D</h1>
+        <p class="sub">Preparing the walkthrough…</p>
+        <div class="bar"><div class="fill" id="fill"></div></div>
+        <p class="status" id="status">Downloading 0%</p>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        var buildUrl = "Build";
+        var config = {
+          dataUrl: buildUrl + "/WebGL.data.unityweb",
+          frameworkUrl: buildUrl + "/WebGL.framework.js.unityweb",
+          codeUrl: buildUrl + "/WebGL.wasm.unityweb",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "PropTwin",
+          productName: "Apartment 3D",
+          productVersion: "1.0",
+          // Cap resolution on dense screens to keep frame rates smooth;
+          // phones and tablets render at 1x.
+          devicePixelRatio: window.matchMedia("(pointer: coarse)").matches
+            ? 1
+            : Math.min(window.devicePixelRatio || 1, 1.5),
+          showBanner: function (message, type) {
+            if (type === "error") fail(message);
+            else console.warn("[Unity]", message);
+          },
+        };
+
+        var canvas = document.getElementById("unity-canvas");
+        var loader = document.getElementById("loader");
+        var fill = document.getElementById("fill");
+        var status = document.getElementById("status");
+
+        function fail(message) {
+          status.className = "status error";
+          status.textContent =
+            "The walkthrough couldn't start. " +
+            (message || "") +
+            " Please try a recent desktop version of Chrome, Edge or Firefox.";
+        }
+
+        if (!window.WebAssembly || !document.createElement("canvas").getContext("webgl2")) {
+          fail("Your browser doesn't support WebGL 2.");
+          return;
+        }
+
+        var script = document.createElement("script");
+        script.src = buildUrl + "/WebGL.loader.js";
+        script.onerror = function () { fail("The 3D files could not be downloaded."); };
+        script.onload = function () {
+          createUnityInstance(canvas, config, function (progress) {
+            var pct = Math.round(progress * 100);
+            fill.style.width = pct + "%";
+            status.textContent = pct < 90 ? "Downloading " + pct + "%" : "Starting the 3D engine…";
+          })
+            .then(function () {
+              loader.classList.add("hidden");
+              canvas.focus();
+            })
+            .catch(function (error) {
+              fail(String(error));
+            });
+        };
+        document.body.appendChild(script);
+
+        // Keyboard focus follows the pointer into the walkthrough.
+        canvas.addEventListener("pointerdown", function () { canvas.focus(); });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PropTwin
 
-## Getting Started
+Website for PropTwin, a 3D modeling studio for real estate. Built with
+[Next.js](https://nextjs.org) and exported as a **fully static site** (no
+backend), deployed to GitHub Pages.
 
-First, run the development server:
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+Writes the complete site to `out/` as plain HTML/CSS/JS, ready for any static
+host. A `postbuild` step (`scripts/flatten-prefetch-files.mjs`) adds files that
+static hosts need for Next.js link prefetching.
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy to GitHub Pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Deployment is automatic via `.github/workflows/deploy.yml`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Push this repository to GitHub.
+2. In the repository, open **Settings → Pages** and set **Source** to
+   **GitHub Actions**.
+3. Push to `main`. The workflow builds and publishes the site to
+   `https://<user>.github.io/<repo>/`.
 
-## Deploy on Vercel
+The workflow detects the sub-path (`/<repo>`) automatically. To use a custom
+domain such as `proptwin.in`, add it under **Settings → Pages → Custom domain**;
+the next deploy serves the site from `/`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project content
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Path | What it is |
+| --- | --- |
+| `public/models/villa.glb` | Blender villa (Draco-compressed), shown in the hero |
+| `public/draco/` | Self-hosted Draco decoder for the villa |
+| `public/walkthrough/` | Unity WebGL apartment walkthrough |
+| `public/projects/` | Project images (floor plan) |

@@ -1,12 +1,6 @@
 import { Container, ButtonLink } from "@/components/ui";
-import HeroModel from "@/components/HeroModel";
+import VillaModel from "@/components/VillaModel";
 import { inputFormats } from "@/components/site";
-
-const highlights = [
-  { value: "1:1", label: "Scale-accurate geometry" },
-  { value: "3", label: "Channels: web, mobile, VR" },
-  { value: "0", label: "Installs for your buyers" },
-];
 
 export default function Hero() {
   return (
@@ -39,27 +33,13 @@ export default function Hero() {
           <div className="mt-10 flex flex-wrap gap-3">
             <ButtonLink href="/contact">Start Your 3D Model</ButtonLink>
             <ButtonLink href="/experience" variant="secondary">
-              Explore Live Demo
+              Walk Through a Project
             </ButtonLink>
           </div>
-
-          <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-8">
-            {highlights.map((item) => (
-              <div key={item.label}>
-                <dt className="sr-only">{item.label}</dt>
-                <dd className="text-3xl font-semibold tracking-tight">
-                  {item.value}
-                </dd>
-                <dd className="mt-1 text-xs leading-5 text-white/45">
-                  {item.label}
-                </dd>
-              </div>
-            ))}
-          </dl>
         </div>
 
         <div className="relative h-[420px] sm:h-[520px] lg:h-[640px]">
-          <HeroModel />
+          <VillaModel />
         </div>
       </Container>
 

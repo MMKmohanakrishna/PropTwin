@@ -1,39 +1,78 @@
 import type { Metadata } from "next";
-import { Hand, Maximize2, MousePointerClick, Navigation } from "lucide-react";
-import DigitalTwin from "@/components/DigitalTwin";
+import {
+  DoorOpen,
+  Footprints,
+  Lamp,
+  MoonStar,
+  SlidersHorizontal,
+} from "lucide-react";
+import UnityWalkthrough from "@/components/UnityWalkthrough";
 import {
   CTABanner,
   Container,
   PageHero,
   SectionHeading,
 } from "@/components/ui";
+import { featuredProject } from "@/components/site";
 
 export const metadata: Metadata = {
-  title: "Interactive 3D Demo",
+  title: "Live Project: Apartment Walkthrough",
   description:
-    "Explore a real-time 2BHK digital twin in your browser. Orbit the 3D model, jump between rooms and see how buyers experience a PropTwin property.",
+    "Walk through a real 1,457 sq ft apartment in your browser, modeled in Blender and built in Unity by PropTwin.",
 };
 
 const features = [
   {
-    icon: Navigation,
-    title: "Room navigation",
-    text: "Jump between the living room, bedrooms, kitchen and balcony with a single click.",
+    icon: Footprints,
+    title: "Walk freely",
+    text: "Walk with WASD and the mouse, or the on-screen joystick on phones, at true eye height and scale.",
   },
   {
-    icon: MousePointerClick,
-    title: "Interactive hotspots",
-    text: "Select glowing markers inside the model to fly the camera into each space.",
+    icon: DoorOpen,
+    title: "Automatic doors",
+    text: "Hinged and sliding doors open as you approach and close behind you.",
   },
   {
-    icon: Hand,
-    title: "Free orbit & zoom",
-    text: "Drag to orbit and scroll to zoom. Inspect the layout from any angle.",
+    icon: MoonStar,
+    title: "Day & night",
+    text: "Press N or tap Day / Night to switch between daylight and a fully lit night scene.",
   },
   {
-    icon: Maximize2,
-    title: "Full-screen presentation",
-    text: "Go full-screen for sales meetings, exhibitions and client walkthroughs.",
+    icon: Lamp,
+    title: "Interior lighting",
+    text: "Toggle room lights and LED strips with L and K, or the on-screen buttons.",
+  },
+  {
+    icon: SlidersHorizontal,
+    title: "Your settings",
+    text: "Adjust look sensitivity, walk speed and invert-look from the pause menu.",
+  },
+];
+
+const pipeline = [
+  {
+    step: "01",
+    tool: "Reference",
+    title: "Floor plan",
+    text: "The developer's 2D plan sets every wall, opening and room dimension.",
+  },
+  {
+    step: "02",
+    tool: "Blender",
+    title: "3D modeling",
+    text: "Walls, joinery, fixtures and furniture modeled to scale, with PBR materials.",
+  },
+  {
+    step: "03",
+    tool: "Unity 6 · URP",
+    title: "Interactive build",
+    text: "Lighting, day/night modes, automatic doors and a first-person player controller.",
+  },
+  {
+    step: "04",
+    tool: "WebGL",
+    title: "Published to the web",
+    text: "Compiled for the browser and cached after first load, with nothing for buyers to install.",
   },
 ];
 
@@ -41,23 +80,19 @@ export default function ExperiencePage() {
   return (
     <main className="bg-paper">
       <PageHero
-        eyebrow="Interactive 3D demo"
+        eyebrow="Live project"
         title={
           <>
-            Step inside the{" "}
-            <span className="text-white/40">digital twin.</span>
+            Walk through a{" "}
+            <span className="text-white/40">real apartment.</span>
           </>
         }
-        description="A real-time 2BHK model running directly in your browser, built the same way we build every client project."
+        description={`${featuredProject.layout}, ${featuredProject.area}. Modeled in Blender, brought to life in Unity, and running right here in your browser.`}
       />
 
       <section className="-mt-12 pb-24 md:-mt-16 md:pb-32">
         <Container className="relative">
-          <DigitalTwin />
-
-          <p className="mt-4 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-black/40">
-            Prototype model · Runs in any modern browser · No install required
-          </p>
+          <UnityWalkthrough />
         </Container>
       </section>
 
@@ -65,11 +100,11 @@ export default function ExperiencePage() {
         <Container>
           <SectionHeading
             index="01"
-            eyebrow="Demo features"
-            title="Explore the property your way."
+            eyebrow="Inside the walkthrough"
+            title="Explore the apartment your way."
           />
 
-          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {features.map((feature) => {
               const Icon = feature.icon;
 
@@ -97,44 +132,50 @@ export default function ExperiencePage() {
       </section>
 
       <section className="bg-ink py-24 text-white md:py-32">
-        <Container className="grid gap-12 lg:grid-cols-2 lg:gap-20">
+        <Container>
           <SectionHeading
             tone="dark"
             index="02"
-            eyebrow="What your project gets"
+            eyebrow="How we built it"
             title={
               <>
-                This demo is a prototype.{" "}
-                <span className="text-white/40">Yours goes further.</span>
+                From a 2D plan{" "}
+                <span className="text-white/40">to a walkable twin.</span>
               </>
             }
           />
 
-          <ul className="space-y-px self-end overflow-hidden rounded-2xl border border-white/10 bg-white/10">
-            {[
-              "Your exact floor plans, modeled to scale",
-              "Real materials, finishes and furniture",
-              "Your branding, unit data and pricing hotspots",
-              "Deployment to your website, app and VR headsets",
-              "Matching photoreal renders and 360° panoramas",
-            ].map((item, index) => (
+          <ol className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {pipeline.map((item) => (
               <li
-                key={item}
-                className="flex items-center gap-5 bg-ink px-6 py-5"
+                key={item.step}
+                className="rounded-3xl border border-white/10 bg-white/[0.03] p-7"
               >
-                <span className="font-mono text-xs text-brass">
-                  0{index + 1}
-                </span>
-                <span className="text-white/80">{item}</span>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-sm text-brass">
+                    {item.step}
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/40">
+                    {item.tool}
+                  </span>
+                </div>
+
+                <h3 className="mt-10 text-xl font-semibold tracking-tight">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-6 text-white/50">
+                  {item.text}
+                </p>
               </li>
             ))}
-          </ul>
+          </ol>
         </Container>
       </section>
 
       <CTABanner
         title="Want this for your project?"
-        description="Share your floor plans and we'll show you what your property looks like as an interactive digital twin."
+        description="Send us your floor plans and we'll turn them into a walkthrough your buyers can explore from anywhere."
       />
     </main>
   );

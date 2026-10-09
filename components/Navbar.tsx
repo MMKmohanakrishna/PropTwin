@@ -28,7 +28,8 @@ export function Logo() {
 }
 
 export default function Navbar() {
-  const pathname = usePathname();
+  // Static export uses trailing slashes (/about/); compare without them.
+  const pathname = usePathname().replace(/(.)\/$/, "$1");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

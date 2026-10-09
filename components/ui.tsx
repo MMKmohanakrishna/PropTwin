@@ -98,29 +98,54 @@ export function PageHero({
   title,
   description,
   children,
+  aside,
 }: {
   eyebrow: string;
   title: React.ReactNode;
   description: React.ReactNode;
   children?: React.ReactNode;
+  /** Optional visual (e.g. a 3D model) shown to the right on large screens. */
+  aside?: React.ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden bg-ink text-white">
+    <section
+      className={`relative overflow-hidden bg-ink text-white ${
+        // With a 3D model the hero fills the first screen, so the next
+        // (light) section never peeks in at the bottom edge.
+        aside ? "lg:min-h-[100svh]" : ""
+      }`}
+    >
       <div className="bg-blueprint absolute inset-0 [mask-image:radial-gradient(ellipse_at_top_right,black_20%,transparent_70%)]" />
       <div className="absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full bg-brass/10 blur-3xl" />
 
-      <Container className="relative pb-24 pt-40 md:pb-32 md:pt-48">
-        <Eyebrow tone="dark">{eyebrow}</Eyebrow>
+      <Container
+        className={`relative pb-24 pt-32 md:pb-32 md:pt-36 ${
+          aside ? "grid items-start gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-4 lg:pb-16 lg:pt-28" : ""
+        }`}
+      >
+        <div>
+          <Eyebrow tone="dark">{eyebrow}</Eyebrow>
 
-        <h1 className="mt-6 max-w-5xl text-balance text-5xl font-semibold leading-[1.02] tracking-[-0.04em] md:text-7xl">
-          {title}
-        </h1>
+          <h1
+            className={`mt-6 max-w-5xl text-balance text-5xl font-semibold leading-[1.02] tracking-[-0.04em] ${
+              aside ? "md:text-6xl xl:text-7xl" : "md:text-7xl"
+            }`}
+          >
+            {title}
+          </h1>
 
-        <p className="mt-8 max-w-2xl text-pretty text-lg leading-8 text-white/60">
-          {description}
-        </p>
+          <p className="mt-8 max-w-2xl text-pretty text-lg leading-8 text-white/60">
+            {description}
+          </p>
 
-        {children}
+          {children}
+        </div>
+
+        {aside && (
+          <div className="relative -mx-5 h-[360px] sm:mx-0 sm:h-[460px] lg:-mr-16 lg:-mt-6 lg:h-[540px]">
+            {aside}
+          </div>
+        )}
       </Container>
     </section>
   );
@@ -192,7 +217,7 @@ export function CTABanner({
             <div className="flex shrink-0 flex-wrap gap-3">
               <ButtonLink href="/contact">Request a Quote</ButtonLink>
               <ButtonLink href="/experience" variant="secondary">
-                View 3D Demo
+                See Live Project
               </ButtonLink>
             </div>
           </div>

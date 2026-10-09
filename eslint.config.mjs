@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated Unity WebGL build output.
+    "public/walkthrough/Build/**",
+    // Vendored Draco decoder from three.js.
+    "public/draco/**",
   ]),
 ]);
 

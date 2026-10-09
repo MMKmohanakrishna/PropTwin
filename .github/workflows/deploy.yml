@@ -32,11 +32,12 @@ jobs:
 
       - run: npm ci
 
+      
       - name: Build static site
         run: npm run build
         env:
-          # "/<repo>" on https://<user>.github.io/<repo>/, empty on a custom domain.
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_BASE_PATH: /PropTwin
+
 
       - uses: actions/upload-pages-artifact@v3
         with:

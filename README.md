@@ -1,8 +1,11 @@
 # PropTwin
 
-Website for PropTwin, a 3D modeling studio for real estate. Built with
-[Next.js](https://nextjs.org) and exported as a **fully static site** (no
-backend), deployed to GitHub Pages.
+Interactive 3D apartment walkthrough built with Blender and Unity, with planned
+Meta Quest VR support, voice communication, and hand interactions.
+
+This repository contains the PropTwin website: a 3D modeling studio for real
+estate. Built with [Next.js](https://nextjs.org) and exported as a **fully
+static site** (no backend), deployed to GitHub Pages.
 
 ## Run locally
 
@@ -43,5 +46,5 @@ the next deploy serves the site from `/`.
 | --- | --- |
 | `public/models/villa.glb` | Blender villa (Draco-compressed), shown in the hero |
 | `public/draco/` | Self-hosted Draco decoder for the villa |
-| `public/walkthrough/` | Unity WebGL apartment walkthrough |
+| `public/walkthrough/` | Unity WebGL apartment walkthrough (desktop + touch) |
 | `public/projects/` | Project images (floor plan) |

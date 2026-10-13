@@ -20,6 +20,7 @@ export const contact = {
 };
 
 export const navLinks = [
+  { href: "/", label: "Home" },
   { href: "/solutions", label: "Services" },
   { href: "/experience", label: "Live Project" },
   { href: "/developers", label: "For Developers" },

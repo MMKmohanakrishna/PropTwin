@@ -114,7 +114,7 @@ export default function Navbar() {
           className="border-t border-white/10 px-5 pb-6 pt-2 md:hidden"
         >
           <div className="flex flex-col">
-            {[{ href: "/", label: "Home" }, ...navLinks].map((link) => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

@@ -101,6 +101,10 @@ export default function Footer() {
         <div className="mt-20 flex flex-col justify-between gap-4 border-t border-white/10 py-8 font-mono text-[11px] uppercase tracking-[0.18em] text-white/35 md:flex-row">
           <p>© {new Date().getFullYear()} PropTwin. All rights reserved.</p>
           <p>3D Modeling · Digital Twins · Web · Mobile · VR</p>
+          <p>
+            Designed and Developed by{" "}
+            <span className="text-brass">Mohana Krishna</span>
+          </p>
         </div>
       </div>
     </footer>

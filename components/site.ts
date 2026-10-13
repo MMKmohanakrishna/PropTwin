@@ -6,10 +6,10 @@ export const asset = (path: string) => `${basePath}${path}`;
 
 export const contact = {
   email: "info@proptwin.in",
-  phone: "+91 9160244950",
-  phoneHref: "tel:+919160244950",
+  phone: "+91 9652544180",
+  phoneHref: "tel:+919652544180",
   whatsappHref:
-    "https://wa.me/919160244950?text=" +
+    "https://wa.me/919652544180?text=" +
     encodeURIComponent("Hi PropTwin, I'd like a quote for a 3D model of my project."),
   addressLines: [
     "3rd Floor, 2161, Social Working Office Space",

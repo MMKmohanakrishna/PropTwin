@@ -12,7 +12,7 @@ export default function Hero() {
         <div className="max-w-2xl">
           <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-white/70">
             <span className="h-1.5 w-1.5 rounded-full bg-brass" />
-            3D Modeling Studio for Real Estate
+            Virtual Studio for Real Estate
           </p>
 
           <h1 className="mt-7 text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.045em] sm:text-6xl xl:text-[5.25rem]">

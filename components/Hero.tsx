@@ -31,7 +31,7 @@ export default function Hero() {
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3">
-            <ButtonLink href="/contact">Start Your 3D Model</ButtonLink>
+            <ButtonLink href="/contact">Start Your Virtual Studio</ButtonLink>
             <ButtonLink href="/experience" variant="secondary">
               Walk Through a Project
             </ButtonLink>
